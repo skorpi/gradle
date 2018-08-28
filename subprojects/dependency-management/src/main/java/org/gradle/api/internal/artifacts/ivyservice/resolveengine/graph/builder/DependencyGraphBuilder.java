@@ -37,7 +37,6 @@ import org.gradle.api.internal.artifacts.ivyservice.resolveengine.graph.conflict
 import org.gradle.api.internal.artifacts.ivyservice.resolveengine.graph.conflicts.DefaultCapabilitiesConflictHandler;
 import org.gradle.api.internal.artifacts.ivyservice.resolveengine.graph.conflicts.ModuleConflictHandler;
 import org.gradle.api.internal.artifacts.ivyservice.resolveengine.graph.conflicts.PotentialConflict;
-import org.gradle.api.internal.artifacts.ivyservice.resolveengine.graph.selectors.SelectorStateResolver;
 import org.gradle.api.internal.attributes.AttributesSchemaInternal;
 import org.gradle.api.internal.attributes.ImmutableAttributesFactory;
 import org.gradle.api.specs.Spec;
@@ -121,7 +120,7 @@ public class DependencyGraphBuilder {
         DefaultBuildableComponentResolveResult rootModule = new DefaultBuildableComponentResolveResult();
         moduleResolver.resolve(resolveContext, rootModule);
 
-        final ResolveState resolveState = new ResolveState(idGenerator, rootModule, resolveContext.getName(), idResolver, metaDataResolver, edgeFilter, attributesSchema, moduleExclusions, moduleReplacementsData, componentSelectorConverter, attributesFactory, dependencySubstitutionApplicator, versionSelectorScheme, versionComparator, versionParser);
+        final ResolveState resolveState = new ResolveState(idGenerator, rootModule, resolveContext.getName(), idResolver, metaDataResolver, edgeFilter, attributesSchema, moduleExclusions, moduleReplacementsData, componentSelectorConverter, attributesFactory, dependencySubstitutionApplicator, versionSelectorScheme, versionComparator, versionParser, moduleConflictHandler.getResolver());
 
         traverseGraph(resolveState);
 
@@ -226,10 +225,8 @@ public class DependencyGraphBuilder {
     private void performSelection(ResolveState resolveState, ModuleResolveState module) {
         ComponentState currentSelection = module.getSelected();
 
-        SelectorStateResolver<ComponentState> selectorStateResolver = new SelectorStateResolver<ComponentState>(moduleConflictHandler.getResolver(), resolveState, resolveState.getRoot().getComponent());
-        ComponentState selected;
         try {
-            selected = selectorStateResolver.selectBest(module.getId(), module.getSelectors());
+            module.maybeUpdateSelection();
         } catch (ModuleVersionResolveException e) {
             // Ignore: All selectors failed, and will have failures recorded
             return;
@@ -237,19 +234,9 @@ public class DependencyGraphBuilder {
 
         // If no current selection for module, just use the candidate.
         if (currentSelection == null) {
-            module.select(selected);
             // This is the first time we've seen the module, so register with conflict resolver.
             checkForModuleConflicts(resolveState, module);
-            return;
         }
-
-        // If current selection is still the best choice, then only need to point new edge/selector at current selection.
-        if (selected == currentSelection) {
-            return;
-        }
-
-        // New candidate is a preferred choice over current selection. Reset the module state and reselect.
-        module.changeSelection(selected);
     }
 
     private void checkForModuleConflicts(ResolveState resolveState, ModuleResolveState module) {
