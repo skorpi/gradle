@@ -16,6 +16,7 @@
 
 package org.gradle.api.artifacts;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 
 /**
@@ -28,6 +29,7 @@ public interface ModuleIdentifier extends Serializable {
      *
      * @return module group
      */
+    @Nullable
     String getGroup();
 
     /**

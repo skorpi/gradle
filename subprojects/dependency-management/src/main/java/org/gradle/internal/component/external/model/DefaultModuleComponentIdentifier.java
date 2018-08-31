@@ -29,7 +29,6 @@ public class DefaultModuleComponentIdentifier implements ModuleComponentIdentifi
     public DefaultModuleComponentIdentifier(ModuleIdentifier module, String version) {
         assert module != null : "module cannot be null";
         assert module.getGroup() != null : "group cannot be null";
-        assert module.getName() != null : "name cannot be null";
         assert version != null : "version cannot be null";
         this.moduleIdentifier = module;
         this.version = version;
@@ -86,11 +85,7 @@ public class DefaultModuleComponentIdentifier implements ModuleComponentIdentifi
         if (!moduleIdentifier.equals(that.moduleIdentifier)) {
             return false;
         }
-        if (!version.equals(that.version)) {
-            return false;
-        }
-
-        return true;
+        return version.equals(that.version);
     }
 
     @Override
