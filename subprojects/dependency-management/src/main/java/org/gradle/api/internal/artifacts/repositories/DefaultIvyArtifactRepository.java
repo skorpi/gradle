@@ -26,6 +26,7 @@ import org.gradle.api.artifacts.ComponentMetadataSupplierDetails;
 import org.gradle.api.artifacts.repositories.AuthenticationContainer;
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository;
 import org.gradle.api.artifacts.repositories.IvyArtifactRepositoryMetaDataProvider;
+import org.gradle.api.artifacts.repositories.IvyPatternRepositoryLayout;
 import org.gradle.api.artifacts.repositories.RepositoryLayout;
 import org.gradle.api.internal.FeaturePreviews;
 import org.gradle.api.internal.InstantiatorFactory;
@@ -287,6 +288,13 @@ public class DefaultIvyArtifactRepository extends AbstractAuthenticationSupporte
     public void layout(String layoutName, Action<? extends RepositoryLayout> config) {
         layout(layoutName);
         ((Action) config).execute(layout);
+    }
+
+    @Override
+    public void patternLayout(Action<? super IvyPatternRepositoryLayout> config) {
+        DefaultIvyPatternRepositoryLayout layout = instantiator.newInstance(DefaultIvyPatternRepositoryLayout.class);
+        this.layout = layout;
+        config.execute(layout);
     }
 
     public IvyArtifactRepositoryMetaDataProvider getResolve() {
