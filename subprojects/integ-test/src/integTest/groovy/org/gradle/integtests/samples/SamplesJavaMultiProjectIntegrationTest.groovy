@@ -44,6 +44,7 @@ class SamplesJavaMultiProjectIntegrationTest extends AbstractIntegrationTest {
 
     @Before
     void setUp() {
+        useRepositoryMirrors(true)
         javaprojectDir = sample.dir
         projects = [SHARED_NAME, API_NAME, WEBAPP_PATH].collect {"$JAVA_PROJECT_NAME/$it"} + JAVA_PROJECT_NAME
     }

@@ -392,9 +392,15 @@ class AbstractIntegrationSpec extends Specification {
         result.assertHasPostBuildOutput(string.trim())
     }
 
-    void useRepositoryMirrors() {
+    void useRepositoryMirrors(boolean global = false) {
         executer.beforeExecute {
-            executer.usingInitScript(RepoScriptBlockUtil.createMirrorInitScript())
+            if (global) {
+                File userHome = file('user-home')
+                executer.withGradleUserHomeDir(userHome)
+                file('user-home/init.gradle') << RepoScriptBlockUtil.mirrorInitScript()
+            } else {
+                executer.usingInitScript(RepoScriptBlockUtil.createMirrorInitScript())
+            }
         }
     }
 
