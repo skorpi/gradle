@@ -393,6 +393,10 @@ class AbstractIntegrationSpec extends Specification {
     }
 
     void useRepositoryMirrors(boolean global = false) {
+        if (System.getenv("CI") == null) {
+            return
+        }
+
         executer.beforeExecute {
             if (global) {
                 File userHome = file('user-home')
@@ -405,6 +409,10 @@ class AbstractIntegrationSpec extends Specification {
     }
 
     void usePluginRepositoryMirror() {
+        if (System.getenv("CI") == null) {
+            return
+        }
+
         executer.beforeExecute {
             executer.withArgument("-D${PLUGIN_PORTAL_OVERRIDE_URL_PROPERTY}=${gradlePluginRepositoryMirrorUrl()}")
         }

@@ -149,13 +149,16 @@ public abstract class AbstractIntegrationTest {
     }
 
     public void useRepositoryMirrors(final boolean global) {
+        if (System.getenv("CI") == null) {
+            return;
+        }
         executer.beforeExecute(new Action<GradleExecuter>() {
             @Override
             public void execute(GradleExecuter gradleExecuter) {
                 if (global) {
                     File userHome = file("user-home");
                     executer.withGradleUserHomeDir(userHome);
-                    file("user-home/init.gradle").write(RepoScriptBlockUtil.createMirrorInitScript());
+                    file("user-home/init.gradle").write(RepoScriptBlockUtil.mirrorInitScript());
                 } else {
                     executer.usingInitScript(RepoScriptBlockUtil.createMirrorInitScript());
                 }
@@ -164,6 +167,9 @@ public abstract class AbstractIntegrationTest {
     }
 
     public void usePluginRepositoryMirror() {
+        if (System.getenv("CI") == null) {
+            return;
+        }
         executer.beforeExecute(new Action<GradleExecuter>() {
             @Override
             public void execute(GradleExecuter gradleExecuter) {

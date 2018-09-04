@@ -38,7 +38,7 @@ class SamplesJavaMultiProjectIntegrationTest extends AbstractIntegrationTest {
     static final String WEBAPP_PATH = "$SERVICES_NAME/$WEBAPP_NAME" as String
 
     private TestFile javaprojectDir
-    private List projects;
+    private List projects
 
     @Rule public final Sample sample = new Sample(testDirectoryProvider, 'java/multiproject')
 
