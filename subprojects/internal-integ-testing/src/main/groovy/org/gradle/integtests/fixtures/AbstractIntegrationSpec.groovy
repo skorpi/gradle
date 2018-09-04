@@ -397,7 +397,7 @@ class AbstractIntegrationSpec extends Specification {
             if (global) {
                 File userHome = file('user-home')
                 executer.withGradleUserHomeDir(userHome)
-                file('user-home/init.gradle') << RepoScriptBlockUtil.mirrorInitScript()
+                file('user-home/init.gradle').text = RepoScriptBlockUtil.mirrorInitScript()
             } else {
                 executer.usingInitScript(RepoScriptBlockUtil.createMirrorInitScript())
             }
