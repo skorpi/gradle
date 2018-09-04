@@ -39,6 +39,7 @@ import org.gradle.internal.operations.BuildOperationExecutor;
 import org.gradle.internal.operations.RunnableBuildOperation;
 import org.gradle.internal.operations.trace.CustomOperationTraceSerialization;
 import org.gradle.internal.reflect.Instantiator;
+import org.gradle.invocation.DefaultGradle;
 import org.gradle.plugin.use.PluginId;
 import org.gradle.plugin.use.internal.DefaultPluginId;
 
@@ -320,7 +321,11 @@ public class DefaultPluginManager implements PluginManagerInternal {
 
         @Override
         public String getBuildPath() {
-            return targetIdentifier.getBuildPath();
+            try {
+                return targetIdentifier.getBuildPath();
+            } catch (DefaultGradle.UnknownBuildPathException e) {
+                return "UNKNOWN";
+            }
         }
 
         @Override

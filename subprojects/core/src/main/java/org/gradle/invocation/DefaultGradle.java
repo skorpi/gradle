@@ -117,7 +117,7 @@ public class DefaultGradle extends AbstractPluginAware implements GradleInternal
         Path path = findIdentityPath();
         if (path == null) {
             // Not known yet
-            throw new IllegalStateException("Root project has not been attached.");
+            throw new UnknownBuildPathException("Root project has not been attached.");
         }
         return path;
     }
@@ -490,4 +490,9 @@ public class DefaultGradle extends AbstractPluginAware implements GradleInternal
         throw new UnsupportedOperationException();
     }
 
+    public class UnknownBuildPathException extends RuntimeException {
+        private UnknownBuildPathException(String s) {
+            super(s);
+        }
+    }
 }
