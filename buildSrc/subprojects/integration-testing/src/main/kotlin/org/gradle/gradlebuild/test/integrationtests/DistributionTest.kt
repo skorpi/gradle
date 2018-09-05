@@ -93,6 +93,9 @@ class GradleInstallationForTestEnvironmentProvider(project: Project) : CommandLi
     val gradleUserHomeDir = project.layout.directoryProperty()
 
     @Internal
+    val gradleGeneratedApiJarCacheDir = project.layout.directoryProperty()
+
+    @Internal
     val toolingApiShadedJarDir = project.layout.directoryProperty()
 
     @Internal
@@ -119,6 +122,7 @@ class GradleInstallationForTestEnvironmentProvider(project: Project) : CommandLi
         mapOf(
             "integTest.gradleHomeDir" to gradleHomeDir.asFile.get().absolutePath,
             "integTest.gradleUserHomeDir" to gradleUserHomeDir.asFile.get().absolutePath,
+            "integTest.gradleGeneratedApiJarCacheDir" to gradleGeneratedApiJarCacheDir.asFile.get().absolutePath,
             "org.gradle.integtest.daemon.registry" to daemonRegistry.asFile.get().absolutePath,
             "integTest.toolingApiShadedJarDir" to toolingApiShadedJarDir.asFile.get().absolutePath
         ).asSystemPropertyJvmArguments()
