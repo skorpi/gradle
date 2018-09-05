@@ -36,6 +36,7 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>A <code>Task</code> represents a single atomic piece of work for a build, such as compiling classes or generating
@@ -746,4 +747,21 @@ public interface Task extends Comparable<Task>, ExtensionAware {
     @Incubating
     @Internal
     TaskDependency getShouldRunAfter();
+
+    /**
+     * <p>Specifies the timeout for this task.</p>
+     *
+     * <pre class='autoTested'>
+     *   task taskY {
+     *       timeoutAfter 10, 'MINUTES'
+     *   }
+     * </pre>
+     *
+     * The Thread executing this task will be interrupted if the task takes longer than the specified amount of time to run.
+     * In order for a task to work properly with this feature, it needs to react to interrupts and must clean up any resources it opened.
+     * By default, tasks never time out.
+     * @since 5.0
+     */
+    @Incubating
+    void timeoutAfter(long time, TimeUnit units);
 }

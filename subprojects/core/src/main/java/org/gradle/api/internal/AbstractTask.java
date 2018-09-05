@@ -82,8 +82,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import static org.gradle.util.GUtil.uncheckedCall;
 
@@ -117,6 +119,8 @@ public abstract class AbstractTask implements TaskInternal, DynamicObjectAware {
     private String description;
 
     private String group;
+
+    private long timeoutInMillis = Long.MAX_VALUE;
 
     private AndSpec<Task> onlyIfSpec = createNewOnlyIfSpec();
 
@@ -922,5 +926,23 @@ public abstract class AbstractTask implements TaskInternal, DynamicObjectAware {
     @Override
     public boolean isHasCustomActions() {
         return hasCustomActions;
+    }
+
+    @Override
+    public void timeoutAfter(long time, TimeUnit units) {
+        this.timeoutInMillis = units.toMillis(time);
+    }
+
+    /*
+     * Only here to make the Groovy DSL for timeouts easier to use.
+     * The Kotlin DSL will provide autocompletion for TimeUnit.
+     */
+    public void timeoutAfter(long time, String units) {
+        timeoutAfter(time, TimeUnit.valueOf(units.toUpperCase(Locale.ROOT)));
+    }
+
+    @Override
+    public long getTimeoutInMillis() {
+        return timeoutInMillis;
     }
 }
