@@ -73,4 +73,9 @@ public class DaemonOutputConsumer implements StreamsHandler {
 
     public void stop() {
     }
+
+    @Override
+    public void disconnect() {
+
+    }
 }
